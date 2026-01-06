@@ -10,6 +10,7 @@ import noobanidus.mods.lootr.common.api.registry.LootrRegistry;
 import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity;
 import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.client.block.TFLootrBossChestBlockRenderer;
+import noobanidus.mods.twilightlootr.init.ModBlockEntities;
 
 @EventBusSubscriber(modid = TwilightLootr.MODID, value = Dist.CLIENT)
 public class ClientSetup {
@@ -19,6 +20,6 @@ public class ClientSetup {
 
   @SubscribeEvent
   public static void registerRenderers(EntityRenderersEvent.RegisterRenderers event) {
-    event.registerBlockEntityRenderer((BlockEntityType<LootrChestBlockEntity>) LootrRegistry.getChestBlockEntity(), TFLootrBossChestBlockRenderer::new);
+    event.registerBlockEntityRenderer(ModBlockEntities.BOSS_CHEST.get(), TFLootrBossChestBlockRenderer::new);
   }
 }

@@ -12,7 +12,7 @@ import noobanidus.mods.twilightlootr.block.TFLootrBossChestBlock;
 public class ModBlocks {
   private static final DeferredRegister<Block> REGISTER = DeferredRegister.create(BuiltInRegistries.BLOCK, TwilightLootr.MODID);
 
-  public static final DeferredHolder<Block, TFLootrBossChestBlock> BOSS_CHEST = REGISTER.register("boss_chest'", () -> new TFLootrBossChestBlock(LootrConstants.CHEST_PROPERTIES));
+  public static final DeferredHolder<Block, TFLootrBossChestBlock> BOSS_CHEST = REGISTER.register("boss_chest", () -> new TFLootrBossChestBlock(LootrConstants.CHEST_PROPERTIES));
 
   public static void register(IEventBus bus) {
     REGISTER.register(bus);

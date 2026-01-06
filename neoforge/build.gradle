@@ -174,7 +174,7 @@ neoForge {
 
         clientData {
             data()
-            programArguments.addAll '--all', '--mod', 'lootr', '--existing', project.project(":neoforge").file("src/main/resources").absolutePath, '--output', project.project(":neoforge").file("src/generated/resources").absolutePath
+            programArguments.addAll '--all', '--mod', project.mod_id, '--existing', project.project(":neoforge").file("src/main/resources").absolutePath, '--output', project.project(":neoforge").file("src/generated/resources").absolutePath
         }
     }
 }

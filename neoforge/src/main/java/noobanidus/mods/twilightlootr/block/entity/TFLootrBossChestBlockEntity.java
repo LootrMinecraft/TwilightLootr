@@ -28,6 +28,7 @@ import java.util.List;
 import java.util.UUID;
 
 public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
+  private int decayingIn = 0;
   private boolean custom = false;
   private NonNullList<ItemStack> customInventory;
   private List<UUID> eligiblePlayers;
@@ -55,6 +56,11 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
         this.eligiblePlayers.add(tag.getUUID("UUID"));
       }
     }
+    if (compound.contains("DecayingIn")) {
+      this.decayingIn = compound.getInt("DecayingIn");
+    } else {
+      this.decayingIn = -1;
+    }
   }
 
   @Override
@@ -71,6 +77,18 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
       eligiblePlayersTag.add(tag);
     }
     compound.put("EligiblePlayers", eligiblePlayersTag);
+    compound.putInt("DecayingIn", this.decayingIn);
+  }
+
+  @Override
+  public void defaultTick(Level level, BlockPos pos, BlockState state) {
+    super.defaultTick(level, pos, state);
+    if (this.decayingIn > 0) {
+      this.decayingIn--;
+      if (this.decayingIn == 0 && !level.isClientSide()) {
+        level.destroyBlock(pos, false);
+      }
+    }
   }
 
   @Override
@@ -91,6 +109,10 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
   @Nullable
   public NonNullList<ItemStack> getInfoReferenceInventory() {
     return customInventory;
+  }
+
+  public void setDecaying (int decayingIn) {
+    this.decayingIn = decayingIn;
   }
 
   public void setCustomInventory(NonNullList<ItemStack> customInventory) {

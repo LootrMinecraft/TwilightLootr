@@ -20,6 +20,7 @@ import java.util.UUID;
 
 @Mixin(IBossLootBuffer.class)
 public interface MixinIBossLootBuffer {
+  // This is technically an overwrite
   @Inject(method = "depositDropsIntoChest", at=@At("HEAD"), cancellable = true)
   private static <T extends LivingEntity & IBossLootBuffer> void lootr$depositDropsIntoChest(T boss, BlockState chest, BlockPos pos, ServerLevel serverLevel, CallbackInfo ci) {
     if ((boss instanceof IHasBossTracking bossWithTracking)) {
@@ -29,7 +30,6 @@ public interface MixinIBossLootBuffer {
       List<UUID> eligiblesPlayers = tracking.eligiblePlayers(serverLevel);
 
       ResourceKey<LootTable> table = boss.getLootTable();
-      boss.getLootTableSeed()
     }
   }
 }
