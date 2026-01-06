@@ -1,0 +1,185 @@
+plugins {
+    id 'net.neoforged.moddev'
+}
+
+// Vanilla depends on ASM 9.3, MDG makes that a 'strict' version constraint,
+// but Mixin and MixinExtras needs newer ASM so we override that here.
+configurations.configureEach {
+    resolutionStrategy.eachDependency { details ->
+        if (details.requested.group == "org.ow2.asm") {
+            details.useVersion(project.asm_version)
+            details.because("Mixin requires new ASM")
+        }
+    }
+}
+
+/*configurations {
+    runtimeClasspath.extendsFrom localRuntime
+}*/
+
+def extraModsDir = "extra-mods"
+
+repositories {
+    maven { url "https://api.modrinth.com/maven" }
+    flatDir {
+        name "extra-mods"
+        dir file(extraModsDir)
+    }
+    maven {
+        url = "https://maven.tamaized.com/releases"
+    }
+}
+
+dependencies {
+    compileOnly "org.ow2.asm:asm:${project.asm_version}"
+    compileOnly "org.ow2.asm:asm-analysis:${project.asm_version}"
+    compileOnly "org.ow2.asm:asm-commons:${project.asm_version}"
+    compileOnly "org.ow2.asm:asm-tree:${project.asm_version}"
+    compileOnly "org.ow2.asm:asm-util:${project.asm_version}"
+
+    compileOnly "net.fabricmc:sponge-mixin:${project.mixin_version}"
+
+    implementation(annotationProcessor("io.github.llamalad7:mixinextras-common:${rootProject.mixin_extras_version}"))
+    implementation("io.github.llamalad7:mixinextras-neoforge:${rootProject.mixin_extras_version}")
+    implementation "maven.modrinth:jade:15.10.0+neoforge"
+    implementation "team-twilight:twilightforest:${rootProject.twifo_version}:universal"
+    implementation("noobanidus.mods.lootr:lootr-neoforge:${rootProject.lootr_version}")
+
+    // Locally sourced extra mods for runtime (i.e. testing)
+    for (extraModJar in fileTree(dir: extraModsDir, include: '*.jar')) {
+        def basename = extraModJar.name.substring(0, extraModJar.name.length() - ".jar".length())
+        def versionSep = basename.lastIndexOf('-')
+        assert versionSep != -1
+        def artifactId = basename.substring(0, versionSep)
+        def version = basename.substring(versionSep + 1)
+        implementation "extra-mods:$artifactId:$version"
+    }
+}
+
+publishMods {
+    file = tasks.jar.archiveFile
+    modLoaders.add("neoforge")
+
+    var env = System.getenv()
+
+    def utils = project.objects.newInstance(ExecUtils)
+
+    def gitRepo = utils.getExecOutput(['git', 'remote', 'get-url', 'origin'])
+    def gitCommit = utils.getExecOutput(['git', 'log', '-n', '1', '--pretty=tformat:%h'])
+    def gitPrevCommit = project.findProperty("git_previous_commit") ?: env["GIT_PREVIOUS_COMMIT"]
+
+    var changelogText = ""
+
+    if (gitCommit && gitPrevCommit) {
+        changelogText += utils.getExecOutput(['git', 'log', "--pretty=tformat:- %s [(%h)](${gitRepo}/commit/%h)", '' + gitPrevCommit + '..' + gitCommit])
+    }
+
+    // Limit the changelog to 500 characters
+    changelogText = changelogText.take(500)
+
+    if (project.hasProperty('curseforge_id_neoforge')) {
+        curseforge('curseforgeNeoForge') {
+            type = STABLE
+
+            projectSlug = "lootr"
+            displayName = "lootr-neoforge-${rootProject.minecraft_version}-${rootProject.mod_version}"
+            accessToken = project.findProperty("curse_auth")
+            projectId = project.findProperty('curseforge_id_neoforge')
+            announcementTitle = "Lootr ${rootProject.minecraft_version}-${rootProject.mod_version} for NeoForge on CurseForge"
+            minecraftVersions.add(project.minecraft_version)
+            changelog = changelogText
+        }
+    }
+
+    if (project.hasProperty('modrinth_id_fabric')) {
+        modrinth('modrinthNeoForge') {
+            type = STABLE
+            displayName = "lootr-neoforge-${rootProject.minecraft_version}-${rootProject.mod_version}"
+            accessToken = project.findProperty("modrinth_auth")
+            projectId = project.findProperty('modrinth_id_neoforge')
+            announcementTitle = "Lootr ${rootProject.minecraft_version}-${rootProject.mod_version} for NeoForge on Modrinth"
+            minecraftVersions.add(project.minecraft_version)
+            changelog = changelogText
+        }
+    }
+
+    if (project.hasProperty("curse_discord_webhook")) {
+        discord {
+            webhookUrl = project.findProperty("curse_discord_webhook")
+            username = "Lootr Update"
+            content = "A new version of Lootr has been released!\n\n${changelogText.take(500)}"
+        }
+    }
+}
+
+neoForge {
+    version = project.neoforge_version
+
+    parchment {
+        minecraftVersion = project.parchment_minecraft_version
+        mappingsVersion = project.parchment_mappings_version
+    }
+
+    def atFile = project.file("src/main/resources/META-INF/accesstransformer_neoforge.cfg")
+    if (atFile.exists()) {
+        accessTransformers {
+            from atFile
+            publish atFile
+        }
+    }
+
+    validateAccessTransformers.set(true)
+
+    mods {
+        // define mod <-> source bindings
+        // these are used to tell the game which sources are for which mod
+        // mostly optional in a single mod project
+        // but multi mod projects should define one per mod
+        "${mod_id}" {
+            sourceSet(sourceSets.main)
+        }
+    }
+
+    runs {
+        configureEach {
+            logLevel = org.slf4j.event.Level.DEBUG
+
+            gameDirectory = project.file('run')
+
+            sourceSet = sourceSets.main
+            loadedMods.set([mods."${mod_id}"])
+        }
+
+        client {
+            client()
+            //systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+
+            if (project.hasProperty('mc_uuid')) {
+                programArguments.add("--uuid=${project.findProperty('mc_uuid')}")
+            }
+
+            if (project.hasProperty('mc_username')) {
+                programArguments.add("--username=${project.findProperty('mc_username')}")
+            }
+
+            if (project.hasProperty('mc_java_agent_path')) {
+                jvmArgument("-javaagent:${project.findProperty('mc_java_agent_path')}")
+            }
+        }
+
+        server {
+            server()
+            systemProperty 'neoforge.enabledGameTestNamespaces', project.mod_id
+        }
+
+        clientData {
+            data()
+            programArguments.addAll '--all', '--mod', 'lootr', '--existing', project.project(":neoforge").file("src/main/resources").absolutePath, '--output', project.project(":neoforge").file("src/generated/resources").absolutePath
+        }
+    }
+}
+
+tasks.build.mustRunAfter tasks.clean
+tasks.publish.mustRunAfter tasks.build
+tasks.publishMods.mustRunAfter tasks.publish
+tasks.buildAndRelease.dependsOn(tasks.clean, tasks.build, tasks.publish, tasks.publishMods)

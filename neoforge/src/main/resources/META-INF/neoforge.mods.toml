@@ -1,0 +1,35 @@
+modLoader="javafml" 
+loaderVersion="[2,)"
+issueTrackerURL="https://github.com/LootrMinecraft/TwilightLootr/issues"
+license="https://github.com/LootrMinecraft/TwilightLootr/blob/HEAD/LICENSE"
+[[mods]]
+    modId="twilight_lootr"
+    version="${version}"
+    displayName="Twilight Lootr"
+    displayURL="https://minecraft.curseforge.com/projects/twilight-lootr"
+    authors="Noobanidus"
+    description="Generates unique loot for each player that opens a loot container."
+
+
+[[mixins]]
+    config="twilight-lootr-neoforge.mixins.json"
+
+[[dependencies.twilight_lootr]]
+    modId="minecraft"
+    type="required"
+    versionRange="${minecraft_version}"
+
+[[dependencies.twilight_lootr]]
+    modId="neoforge"
+    type="required"
+    versionRange="[21,)"
+
+[[dependencies.twilight_lootr]]
+    modId="lootr"
+    type="required"
+    versionRange="[1.21.1-1.11.36.109,)"
+
+[[dependencies.twilight_lootr]]
+    modId="twilightforest"
+    type="required"
+    versionRange="[4.5.2439,)"

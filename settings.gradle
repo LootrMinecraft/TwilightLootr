@@ -15,4 +15,4 @@ plugins {
 
 rootProject.name = "Twilight Lootr"
 
-include 'common', 'neoforge'
+include 'neoforge'
