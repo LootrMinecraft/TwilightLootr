@@ -1,7 +1,7 @@
 package noobanidus.mods.twilightlootr.entity;
 
-import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
 import net.minecraft.core.UUIDUtil;
@@ -15,12 +15,18 @@ import java.util.List;
 import java.util.UUID;
 
 public class BossTracking {
-  public static final Codec<BossTracking> CODEC = Codec.list(Codec.pair(UUIDUtil.CODEC, Codec.LONG)).xmap(
+  private record UUIDPair(UUID id, long value) {
+    static final Codec<UUIDPair> CODEC = RecordCodecBuilder.create(instance ->
+        instance.group(UUIDUtil.CODEC.fieldOf("id").forGetter(UUIDPair::id), Codec.LONG.fieldOf("value")
+            .forGetter(UUIDPair::value)).apply(instance, UUIDPair::new));
+    static final Codec<List<UUIDPair>> LIST_CODEC = CODEC.listOf();
+  }
+
+  public static final Codec<BossTracking> CODEC = UUIDPair.LIST_CODEC.xmap(
       list -> new BossTracking(
-          list.stream().collect(Object2LongOpenHashMap::new, (m, p) -> m.put(p.getFirst(), p.getSecond()
-              .longValue()), Object2LongMap::putAll)),
+          list.stream().collect(Object2LongOpenHashMap::new, (m, p) -> m.put(p.id, p.value), Object2LongMap::putAll)),
       tracking -> tracking.trackingMap.object2LongEntrySet().stream()
-          .map(e -> Pair.of(e.getKey(), e.getLongValue()))
+          .map(e -> new UUIDPair(e.getKey(), e.getLongValue()))
           .toList()
   );
 

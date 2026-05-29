@@ -112,6 +112,14 @@ publishMods {
     }
 }
 
+def generatedResources = file("src/generated/resources")
+
+sourceSets {
+    main {
+        resources.srcDir(generatedResources)
+    }
+}
+
 neoForge {
     version = project.neoforge_version
 

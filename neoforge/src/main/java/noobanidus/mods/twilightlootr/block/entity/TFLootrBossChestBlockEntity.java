@@ -24,6 +24,7 @@ import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity;
 import noobanidus.mods.twilightlootr.init.ModBlockEntities;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
 
@@ -31,7 +32,7 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
   private int decayingIn = 0;
   private boolean custom = false;
   private NonNullList<ItemStack> customInventory;
-  private List<UUID> eligiblePlayers;
+  private List<UUID> eligiblePlayers = new ArrayList<>();
 
   public TFLootrBossChestBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
     super(ModBlockEntities.BOSS_CHEST.get(), pWorldPosition, pBlockState);
@@ -70,13 +71,15 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
       compound.putInt(NBTConstants.CUSTOM_SIZE, this.customInventory.size());
       compound.put(NBTConstants.CUSTOM_INVENTORY, ContainerHelper.saveAllItems(new CompoundTag(), this.customInventory, provider));
     }
-    ListTag eligiblePlayersTag = new ListTag();
-    for (UUID uuid : this.eligiblePlayers) {
-      CompoundTag tag = new CompoundTag();
-      tag.putUUID("UUID", uuid);
-      eligiblePlayersTag.add(tag);
+    if (this.eligiblePlayers != null) {
+      ListTag eligiblePlayersTag = new ListTag();
+      for (UUID uuid : this.eligiblePlayers) {
+        CompoundTag tag = new CompoundTag();
+        tag.putUUID("UUID", uuid);
+        eligiblePlayersTag.add(tag);
+      }
+      compound.put("EligiblePlayers", eligiblePlayersTag);
     }
-    compound.put("EligiblePlayers", eligiblePlayersTag);
     compound.putInt("DecayingIn", this.decayingIn);
   }
 

@@ -1,0 +1,12 @@
+{
+  "sources": [
+    {
+      "type": "minecraft:single",
+      "resource": "twilight_lootr:entity/boss_chest"
+    },
+    {
+      "type": "minecraft:single",
+      "resource": "twilight_lootr:entity/boss_chest_opened"
+    }
+  ]
+}

@@ -6,16 +6,13 @@ import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.blockentity.ChestRenderer;
 import net.minecraft.client.resources.model.Material;
 import net.minecraft.world.level.block.state.properties.ChestType;
-import noobanidus.mods.lootr.common.api.LootrAPI;
-import noobanidus.mods.lootr.common.api.data.blockentity.ILootrBlockEntity;
-import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity;
 import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.block.entity.TFLootrBossChestBlockEntity;
 
 @SuppressWarnings({"NullableProblems"})
 public class TFLootrBossChestBlockRenderer extends ChestRenderer<TFLootrBossChestBlockEntity> {
-  public static final Material MATERIAL = new Material(Sheets.CHEST_SHEET, TwilightLootr.rl("boss_chest"));
-  public static final Material MATERIAL2 = new Material(Sheets.CHEST_SHEET, TwilightLootr.rl("boss_chest_opened"));
+  public static final Material MATERIAL = new Material(Sheets.CHEST_SHEET, TwilightLootr.rl("entity/boss_chest"));
+  public static final Material MATERIAL2 = new Material(Sheets.CHEST_SHEET, TwilightLootr.rl("entity/boss_chest_opened"));
 
   public TFLootrBossChestBlockRenderer(BlockEntityRendererProvider.Context p_173607_) {
     super(p_173607_);

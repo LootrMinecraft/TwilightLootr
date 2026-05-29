@@ -1,11 +1,14 @@
 package noobanidus.mods.twilightlootr.gen;
 
+import net.minecraft.client.renderer.texture.atlas.sources.SingleFile;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.data.PackOutput;
 import net.neoforged.neoforge.common.data.ExistingFileHelper;
 import net.neoforged.neoforge.common.data.SpriteSourceProvider;
 import noobanidus.mods.twilightlootr.TwilightLootr;
+import noobanidus.mods.twilightlootr.client.block.TFLootrBossChestBlockRenderer;
 
+import java.util.Optional;
 import java.util.concurrent.CompletableFuture;
 
 public class TFLootrAtlasGenerator extends SpriteSourceProvider {
@@ -15,20 +18,9 @@ public class TFLootrAtlasGenerator extends SpriteSourceProvider {
 
   @Override
   protected void gather() {
-/*    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.MATERIAL.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.MATERIAL2.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.MATERIAL3.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.MATERIAL4.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.OLD_MATERIAL.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.OLD_MATERIAL2.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.OLD_MATERIAL3.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS).addSource(new SingleFile(LootrChestBlockRenderer.OLD_MATERIAL4.texture(), Optional.empty()));
-    this.atlas(SHULKER_BOXES_ATLAS).addSource(new SingleFile(LootrShulkerBlockRenderer.MATERIAL.texture(), Optional.empty()));
-    this.atlas(SHULKER_BOXES_ATLAS).addSource(new SingleFile(LootrShulkerBlockRenderer.MATERIAL2.texture(), Optional.empty()));
-    this.atlas(SHULKER_BOXES_ATLAS).addSource(new SingleFile(LootrShulkerBlockRenderer.MATERIAL3.texture(), Optional.empty()));
-    this.atlas(SHULKER_BOXES_ATLAS).addSource(new SingleFile(LootrShulkerBlockRenderer.MATERIAL4.texture(), Optional.empty()));
-    this.atlas(BLOCKS_ATLAS).addSource(new SingleFile(LootrAPI.rl("chest_opened"), Optional.empty()));
-    this.atlas(BLOCKS_ATLAS).addSource(new SingleFile(LootrAPI.rl("minecraft", "entity/player/wide/steve"), Optional.empty()));
-    this.atlas(ResourceLocation.withDefaultNamespace("decorated_pot")).addSource(new SingleFile(LootrAPI.rl("entity/loot_pot"), Optional.empty())).addSource(new SingleFile(LootrAPI.rl("entity/loot_pot_open"), Optional.empty())).addSource(new SingleFile(LootrAPI.rl("entity/decorated_pot/loot_pottery_pattern"), Optional.empty()));*/
+    this.atlas(CHESTS_ATLAS)
+        .addSource(new SingleFile(TFLootrBossChestBlockRenderer.MATERIAL.texture(), Optional.empty()));
+    this.atlas(CHESTS_ATLAS)
+        .addSource(new SingleFile(TFLootrBossChestBlockRenderer.MATERIAL2.texture(), Optional.empty()));
   }
 }
