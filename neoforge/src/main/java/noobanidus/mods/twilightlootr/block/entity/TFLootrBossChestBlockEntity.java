@@ -8,7 +8,6 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.ContainerHelper;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
@@ -16,11 +15,12 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import noobanidus.mods.lootr.common.api.ILootrBlockEntityConverter;
+import noobanidus.mods.lootr.common.api.ILootrType;
 import noobanidus.mods.lootr.common.api.LootrAPI;
-import noobanidus.mods.lootr.common.api.NBTConstants;
 import noobanidus.mods.lootr.common.api.data.LootrBlockType;
 import noobanidus.mods.lootr.common.api.data.blockentity.ILootrBlockEntity;
 import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity;
+import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.init.ModBlockEntities;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,8 +30,6 @@ import java.util.UUID;
 
 public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
   private int decayingIn = 0;
-  private boolean custom = false;
-  private NonNullList<ItemStack> customInventory;
   private List<UUID> eligiblePlayers = new ArrayList<>();
 
   public TFLootrBossChestBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
@@ -41,14 +39,6 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
   @Override
   public void loadAdditional(CompoundTag compound, HolderLookup.Provider provider) {
     super.loadAdditional(compound, provider);
-    if (compound.contains(NBTConstants.CUSTOM_INVENTORY) && compound.contains(NBTConstants.CUSTOM_SIZE)) {
-      int size = compound.getInt(NBTConstants.CUSTOM_SIZE);
-      this.customInventory = NonNullList.withSize(size, ItemStack.EMPTY);
-      ContainerHelper.loadAllItems(compound.getCompound(NBTConstants.CUSTOM_INVENTORY), this.customInventory, provider);
-      if (this.customInventory.stream().anyMatch(o -> !o.isEmpty())) {
-        this.custom = true;
-      }
-    }
     if (compound.contains("EligiblePlayers")) {
       this.eligiblePlayers.clear();
       ListTag eligiblePlayersTag = compound.getList("EligiblePlayers", 10);
@@ -67,10 +57,6 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
   @Override
   protected void saveAdditional(CompoundTag compound, HolderLookup.Provider provider) {
     super.saveAdditional(compound, provider);
-    if (this.customInventory != null) {
-      compound.putInt(NBTConstants.CUSTOM_SIZE, this.customInventory.size());
-      compound.put(NBTConstants.CUSTOM_INVENTORY, ContainerHelper.saveAllItems(new CompoundTag(), this.customInventory, provider));
-    }
     if (this.eligiblePlayers != null) {
       ListTag eligiblePlayersTag = new ListTag();
       for (UUID uuid : this.eligiblePlayers) {
@@ -111,18 +97,11 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
   @Override
   @Nullable
   public NonNullList<ItemStack> getInfoReferenceInventory() {
-    return customInventory;
+    return null;
   }
 
-  public void setDecaying (int decayingIn) {
+  public void setDecaying(int decayingIn) {
     this.decayingIn = decayingIn;
-  }
-
-  public void setCustomInventory(NonNullList<ItemStack> customInventory) {
-    if (customInventory.isEmpty() || customInventory.stream().anyMatch(o -> !o.isEmpty())) {
-      this.customInventory = customInventory;
-      this.custom = true;
-    }
   }
 
   public void setEligiblePlayers(List<UUID> eligiblePlayers) {
@@ -141,13 +120,18 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
 
   @Override
   public boolean isInfoReferenceInventory() {
-    return custom;
+    return false;
   }
 
   @Override
   @Deprecated
   public LootrBlockType getInfoBlockType() {
     return LootrBlockType.INVENTORY;
+  }
+
+  @Override
+  public ILootrType getInfoNewType() {
+    return TwilightLootr.TYPE;
   }
 
   @AutoService(ILootrBlockEntityConverter.class)

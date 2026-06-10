@@ -3,7 +3,7 @@ package noobanidus.mods.twilightlootr.config;
 import net.neoforged.neoforge.common.ModConfigSpec;
 
 public class ConfigManager {
-  public static final ModConfigSpec.BooleanValue USE_STATIC_LOOT;
+/*  public static final ModConfigSpec.BooleanValue USE_STATIC_LOOT;*/
   public static final ModConfigSpec.BooleanValue ENABLE_DECAY;
   public static final ModConfigSpec.IntValue DECAY_TIME;
 
@@ -12,9 +12,9 @@ public class ConfigManager {
 
   static {
     COMMON_BUILDER.push("general");
-    USE_STATIC_LOOT = COMMON_BUILDER
+/*    USE_STATIC_LOOT = COMMON_BUILDER
         .comment("if true, boss chests will generate loot from the boss's loot table and each eligible player will get a copy. if false, boss chests will generate loot individually for each player. [default false]")
-        .define("use_static_loot", false);
+        .define("use_static_loot", false);*/
     ENABLE_DECAY = COMMON_BUILDER
         .comment("if true, boss chests will decay after a set amount of time from the boss dying [default false]")
         .define("enable_decay", true);

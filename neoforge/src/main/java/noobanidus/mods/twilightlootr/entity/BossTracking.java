@@ -40,6 +40,12 @@ public class BossTracking {
     this.trackingMap = trackingMap;
   }
 
+  public void merge (BossTracking otherTracking) {
+    for (Object2LongMap.Entry<UUID> entry : otherTracking.trackingMap.object2LongEntrySet()) {
+      trackingMap.mergeLong(entry.getKey(), entry.getLongValue(), Math::min);
+    }
+  }
+
   public void trackPlayer(ServerPlayer player) {
     trackingMap.put(player.getUUID(), player.serverLevel().getGameTime());
   }

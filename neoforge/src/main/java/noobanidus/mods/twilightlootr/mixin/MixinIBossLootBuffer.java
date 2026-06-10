@@ -1,15 +1,11 @@
 package noobanidus.mods.twilightlootr.mixin;
 
-import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
-import net.minecraft.core.NonNullList;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.storage.loot.LootTable;
 import noobanidus.mods.lootr.common.api.LootrAPI;
 import noobanidus.mods.twilightlootr.block.entity.TFLootrBossChestBlockEntity;
 import noobanidus.mods.twilightlootr.config.ConfigManager;
@@ -21,6 +17,7 @@ import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import twilightforest.entity.boss.IBossLootBuffer;
+import twilightforest.entity.boss.KnightPhantom;
 import twilightforest.loot.TFLootTables;
 
 import java.util.List;
@@ -35,7 +32,8 @@ public interface MixinIBossLootBuffer {
       var tracking = bossWithTracking.lootr$GetBossTracking();
       List<UUID> eligiblesPlayers = tracking.eligiblePlayers(serverLevel);
 
-      BlockState newChest = ModBlocks.BOSS_CHEST.get().defaultBlockState().setValue(ChestBlock.FACING, incomingChest.getValue(ChestBlock.FACING));
+      BlockState newChest = ModBlocks.BOSS_CHEST.get().defaultBlockState()
+          .setValue(ChestBlock.FACING, incomingChest.getValue(ChestBlock.FACING));
 
       if (eligiblesPlayers.isEmpty()) {
         // TODO: I guess this can happen when killed with a command?
@@ -69,7 +67,7 @@ public interface MixinIBossLootBuffer {
 
       tbe.setEligiblePlayers(eligiblesPlayers);
 
-      if (ConfigManager.USE_STATIC_LOOT.get()) {
+/*      if (ConfigManager.USE_STATIC_LOOT.get()) {
         NonNullList<ItemStack> stacks = NonNullList.withSize(tbe.getContainerSize(), ItemStack.EMPTY);
         for (int i = 0; i < stacks.size(); i++) {
           if (i >= tbe.getContainerSize()) {
@@ -78,6 +76,11 @@ public interface MixinIBossLootBuffer {
           stacks.set(i, boss.getItemStacks().get(i).copy());
         }
         tbe.setCustomInventory(stacks);
+      } else {*/
+
+      if (boss instanceof KnightPhantom phantom) {
+        // TODO: Combine both loot tables
+        tbe.setLootTable(TFLootTables.KNIGHT_PHANTOM_DEFEATED);
       } else {
         tbe.setLootTable(boss.getLootTable());
       }
