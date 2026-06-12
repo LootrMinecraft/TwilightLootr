@@ -19,8 +19,8 @@ public class TFLootrAtlasGenerator extends SpriteSourceProvider {
   @Override
   protected void gather() {
     this.atlas(CHESTS_ATLAS)
-        .addSource(new SingleFile(TFLootrBossChestBlockRenderer.MATERIAL.texture(), Optional.empty()));
-    this.atlas(CHESTS_ATLAS)
-        .addSource(new SingleFile(TFLootrBossChestBlockRenderer.MATERIAL2.texture(), Optional.empty()));
+        .addSource(new SingleFile(TFLootrBossChestBlockRenderer.MATERIAL.texture(), Optional.empty()))
+        .addSource(new SingleFile(TFLootrBossChestBlockRenderer.MATERIAL2.texture(), Optional.empty()))
+        .addSource(new SingleFile(TFLootrBossChestBlockRenderer.MATERIAL3.texture(), Optional.empty()));
   }
 }

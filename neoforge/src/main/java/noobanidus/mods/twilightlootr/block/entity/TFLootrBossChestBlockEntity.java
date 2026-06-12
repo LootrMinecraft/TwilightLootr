@@ -104,6 +104,10 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
     this.decayingIn = decayingIn;
   }
 
+  public boolean isEligiblePlayer (Player player) {
+    return this.eligiblePlayers.contains(player.getUUID());
+  }
+
   public void setEligiblePlayers(List<UUID> eligiblePlayers) {
     this.eligiblePlayers = eligiblePlayers;
   }
