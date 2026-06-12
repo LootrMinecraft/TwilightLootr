@@ -48,6 +48,6 @@ public class EntityEventHandler {
     if (boss == null || !(player instanceof ServerPlayer sPlayer)) {
       return;
     }
-    boss.lootr$GetBossTracking().trackPlayer(sPlayer);
+    boss.lootr$getBossTracking().trackPlayer(sPlayer);
   }
 }

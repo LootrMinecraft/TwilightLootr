@@ -5,7 +5,7 @@
   "mixins": [
     "MixinIBossLootBuffer",
     "MixinKnightPhantom",
-    "MixinTFBossEntity",
+    "MixinBaseTFBoss",
     "MixinTwilightForestMod"
   ],
   "client": [

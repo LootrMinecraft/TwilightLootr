@@ -6,16 +6,21 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
+import net.minecraft.world.level.storage.loot.LootTable;
 import noobanidus.mods.lootr.common.api.LootrAPI;
+import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.block.entity.TFLootrBossChestBlockEntity;
 import noobanidus.mods.twilightlootr.config.ConfigManager;
+import noobanidus.mods.twilightlootr.entity.BossTracking;
 import noobanidus.mods.twilightlootr.entity.IHasBossTracking;
+import noobanidus.mods.twilightlootr.impl.TFLootFiller;
 import noobanidus.mods.twilightlootr.init.ModBlocks;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import twilightforest.entity.boss.BaseTFBoss;
 import twilightforest.entity.boss.IBossLootBuffer;
 import twilightforest.entity.boss.KnightPhantom;
 import twilightforest.loot.TFLootTables;
@@ -29,8 +34,14 @@ public interface MixinIBossLootBuffer {
   @Inject(method = "depositDropsIntoChest", at = @At("HEAD"), cancellable = true)
   private static <T extends LivingEntity & IBossLootBuffer> void lootr$depositDropsIntoChest(T boss, BlockState incomingChest, BlockPos pos, ServerLevel serverLevel, CallbackInfo ci) {
     if (boss instanceof IHasBossTracking bossWithTracking) {
-      var tracking = bossWithTracking.lootr$GetBossTracking();
+      var tracking = bossWithTracking.lootr$getBossTracking();
+
+      // Additionally track players nearby who died as they are
+      // eligible for the "Structure completed" achievement
+      tracking.trackPlayers(serverLevel, pos);
+
       List<UUID> eligiblesPlayers = tracking.eligiblePlayers(serverLevel);
+      List<BossTracking.PlayerEntry> playerList = tracking.eligiblePlayersList(serverLevel);
 
       BlockState newChest = ModBlocks.BOSS_CHEST.get().defaultBlockState()
           .setValue(ChestBlock.FACING, incomingChest.getValue(ChestBlock.FACING));
@@ -67,23 +78,18 @@ public interface MixinIBossLootBuffer {
 
       tbe.setEligiblePlayers(eligiblesPlayers);
 
-/*      if (ConfigManager.USE_STATIC_LOOT.get()) {
-        NonNullList<ItemStack> stacks = NonNullList.withSize(tbe.getContainerSize(), ItemStack.EMPTY);
-        for (int i = 0; i < stacks.size(); i++) {
-          if (i >= tbe.getContainerSize()) {
-            break;
-          }
-          stacks.set(i, boss.getItemStacks().get(i).copy());
-        }
-        tbe.setCustomInventory(stacks);
-      } else {*/
+      TFLootFiller filler = new TFLootFiller((BaseTFBoss)boss);
 
-      if (boss instanceof KnightPhantom phantom) {
-        // TODO: Combine both loot tables
-        tbe.setLootTable(TFLootTables.KNIGHT_PHANTOM_DEFEATED);
-      } else {
-        tbe.setLootTable(boss.getLootTable());
+      var data = LootrAPI.getData(tbe);
+      if (data == null) {
+        return;
       }
+
+      for (BossTracking.PlayerEntry entry : playerList) {
+        data.createInventory(tbe, entry.id(), filler);
+      }
+
+      tbe.setLootTable(TwilightLootr.PLACEHOLDER);
 
       if (ConfigManager.ENABLE_DECAY.get()) {
         tbe.setDecaying(ConfigManager.DECAY_TIME.get());

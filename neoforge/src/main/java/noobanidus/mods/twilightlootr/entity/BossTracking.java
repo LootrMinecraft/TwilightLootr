@@ -4,11 +4,18 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import it.unimi.dsi.fastutil.objects.Object2LongMap;
 import it.unimi.dsi.fastutil.objects.Object2LongOpenHashMap;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.UUIDUtil;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.server.players.PlayerList;
+import net.minecraft.world.phys.AABB;
+import noobanidus.mods.twilightlootr.mixin.MixinBaseTFBoss;
+import org.jetbrains.annotations.Nullable;
+import twilightforest.entity.boss.BaseTFBoss;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -50,6 +57,12 @@ public class BossTracking {
     trackingMap.put(player.getUUID(), player.serverLevel().getGameTime());
   }
 
+  public void trackPlayers (ServerLevel level, BlockPos pos) {
+    for (ServerPlayer player : level.getEntitiesOfClass(ServerPlayer.class, new AABB(pos).inflate(32.0F))) {
+      trackPlayer(player);
+    }
+  }
+
   public List<UUID> eligiblePlayers(ServerLevel level) {
     // 2 minutes, should be configurable
     return eligiblePlayers(level, 20 * 60 * 2);
@@ -63,6 +76,20 @@ public class BossTracking {
       }
     }
     return result;
+  }
+
+  public List<PlayerEntry> eligiblePlayersList (ServerLevel level) {
+    List<PlayerEntry> result = new ArrayList<>();
+    MinecraftServer server = level.getServer();
+    PlayerList playerList = server.getPlayerList();
+    for (UUID playerId : eligiblePlayers(level)) {
+      ServerPlayer player = playerList.getPlayer(playerId);
+      result.add(new PlayerEntry(playerId, player));
+    }
+    return result;
+  }
+
+  public record PlayerEntry (UUID id, @Nullable ServerPlayer player) {
   }
 
   public CompoundTag save(CompoundTag tag) {

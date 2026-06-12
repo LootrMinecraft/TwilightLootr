@@ -27,7 +27,7 @@ license="https://github.com/LootrMinecraft/TwilightLootr/blob/HEAD/LICENSE"
 [[dependencies.twilight_lootr]]
     modId="lootr"
     type="required"
-    versionRange="[1.21.1-1.11.36.109,)"
+    versionRange="[1.21.1-1.11.37.121,)"
 
 [[dependencies.twilight_lootr]]
     modId="twilightforest"

@@ -18,7 +18,7 @@ public class MixinKnightPhantom {
   private void lootr$KnightPhantomPostMortem (ServerLevel serverLevel, DamageSource cause, CallbackInfo ci, @Local(name = "knights") List<KnightPhantom> phantoms) {
     if ((Object) this instanceof IHasBossTracking withTracking) {
       for (var kn : phantoms) {
-        ((IHasBossTracking)kn).lootr$GetBossTracking().merge(withTracking.lootr$GetBossTracking());
+        ((IHasBossTracking)kn).lootr$getBossTracking().merge(withTracking.lootr$getBossTracking());
       }
     }
   }

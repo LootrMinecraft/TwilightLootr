@@ -32,5 +32,6 @@ public class TFLootrDataGenerators {
     generator.addProvider(event.includeServer(), new TFLootrEntityTagsProvider(output, provider, helper));
     generator.addProvider(event.includeClient(), new TFLootrLangProvider(output));
     generator.addProvider(event.includeServer(), new AdvancementProvider(output, provider, helper, List.of(new TFLootrAdvancementGenerator())));
+    generator.addProvider(event.includeServer(), TFLootrLootTableProvider.create(output, provider));
   }
 }
