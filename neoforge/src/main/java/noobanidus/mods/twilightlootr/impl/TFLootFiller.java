@@ -1,29 +1,38 @@
 package noobanidus.mods.twilightlootr.impl;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootParams;
 import net.minecraft.world.level.storage.loot.LootTable;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParamSets;
 import net.minecraft.world.level.storage.loot.parameters.LootContextParams;
 import noobanidus.mods.lootr.common.api.LootrAPI;
+import noobanidus.mods.lootr.common.api.data.DefaultLootFiller;
 import noobanidus.mods.lootr.common.api.data.ILootrInfoProvider;
 import noobanidus.mods.lootr.common.api.data.LootFiller;
 import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.entity.IHasBossTracking;
+import noobanidus.mods.twilightlootr.mixin.AccessorMixinLootTable;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import twilightforest.entity.boss.BaseTFBoss;
 
+import java.util.List;
+
 public class TFLootFiller implements LootFiller {
   private final BaseTFBoss boss;
+  private final ObjectArrayList<ItemStack> bossItems;
 
-  public TFLootFiller(BaseTFBoss boss) {
+  public TFLootFiller(BaseTFBoss boss, ObjectArrayList<ItemStack> bossUniqueItems) {
     this.boss = boss;
+    this.bossItems = bossUniqueItems;
   }
 
   private LootParams createLootParamsFor(@Nullable ServerPlayer player, ServerLevel level) {
@@ -75,5 +84,33 @@ public class TFLootFiller implements LootFiller {
 
     long seed = LootrAPI.getLootSeed(boss.getLootTableSeed());
     this.fill(provider, player, lootTable, table, inventory, params, seed);
+  }
+
+  @Override
+  public void fill(ILootrInfoProvider provider, Player player, ResourceKey<LootTable> lootTableKey, LootTable lootTable, Container container, LootParams parameters, long seed) {
+    DefaultLootFiller.setFillerState(new LootFillerState(provider, player, lootTableKey, lootTable, container, parameters, seed));
+    ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
+    for (ItemStack item : bossItems) {
+      objectarraylist.add(item.copy());
+    }
+    objectarraylist.addAll(lootTable.getRandomItems(parameters));
+    RandomSource randomSource = RandomSource.create(seed);
+    List<Integer> list = ((AccessorMixinLootTable)lootTable).lootr$getAvailableSlots(container, randomSource);
+    ((AccessorMixinLootTable)lootTable).lootr$shuffleAndSplitItems(objectarraylist, list.size(), randomSource);
+
+    for (ItemStack itemstack : objectarraylist) {
+      if (list.isEmpty()) {
+        TwilightLootr.LOG.warn("Tried to over-fill a container");
+        return;
+      }
+
+      if (itemstack.isEmpty()) {
+        container.setItem(list.removeLast(), ItemStack.EMPTY);
+      } else {
+        container.setItem(list.removeLast(), itemstack);
+      }
+    }
+
+    DefaultLootFiller.setFillerState(null);
   }
 }

@@ -3,9 +3,10 @@
   "package": "noobanidus.mods.twilightlootr.mixin",
   "compatibilityLevel": "JAVA_21",
   "mixins": [
+    "AccessorMixinLootTable",
+    "MixinBaseTFBoss",
     "MixinIBossLootBuffer",
     "MixinKnightPhantom",
-    "MixinBaseTFBoss",
     "MixinTwilightForestMod"
   ],
   "client": [

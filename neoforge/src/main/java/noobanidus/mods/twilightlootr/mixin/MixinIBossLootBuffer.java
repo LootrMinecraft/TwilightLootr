@@ -1,8 +1,11 @@
 package noobanidus.mods.twilightlootr.mixin;
 
+import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.entity.ItemSteerable;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
@@ -12,6 +15,7 @@ import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.block.entity.TFLootrBossChestBlockEntity;
 import noobanidus.mods.twilightlootr.config.ConfigManager;
 import noobanidus.mods.twilightlootr.entity.BossTracking;
+import noobanidus.mods.twilightlootr.entity.IHasBossLoot;
 import noobanidus.mods.twilightlootr.entity.IHasBossTracking;
 import noobanidus.mods.twilightlootr.impl.TFLootFiller;
 import noobanidus.mods.twilightlootr.init.ModBlocks;
@@ -78,7 +82,9 @@ public interface MixinIBossLootBuffer {
 
       tbe.setEligiblePlayers(eligiblesPlayers);
 
-      TFLootFiller filler = new TFLootFiller((BaseTFBoss)boss);
+      ObjectArrayList<ItemStack> bossUniqueItems = ((boss instanceof IHasBossLoot hasBossLoot) ? hasBossLoot.lootr$getBossUniqueItems() : new ObjectArrayList<>());
+
+      TFLootFiller filler = new TFLootFiller((BaseTFBoss)boss, bossUniqueItems);
 
       var data = LootrAPI.getData(tbe);
       if (data == null) {
@@ -86,7 +92,7 @@ public interface MixinIBossLootBuffer {
       }
 
       for (BossTracking.PlayerEntry entry : playerList) {
-        data.createInventory(tbe, entry.id(), filler);
+        var inventory = data.createInventory(tbe, entry.id(), filler);
       }
 
       tbe.setLootTable(TwilightLootr.PLACEHOLDER);
