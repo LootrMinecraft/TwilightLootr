@@ -45,12 +45,12 @@ public class TFLootrBossChestItemRenderer extends BlockEntityWithoutLevelRendere
   public void renderByItem(ItemStack p_108830_, ItemDisplayContext p_270899_, PoseStack p_108832_, MultiBufferSource p_108833_, int p_108834_, int p_108835_) {
     this.blockEntityRenderDispatcher.renderItem(blockEntity, p_108832_, p_108833_, p_108834_, p_108835_);
   }
-
+/*
   public void renderByMinecart(LootrChestMinecartEntity entity, PoseStack matrixStack, MultiBufferSource buffer, int combinedLight) {
     // Don't change this to `hasClientOpened`
     boolean open = blockEntity.isClientOpened();
     blockEntity.setClientOpened(entity.isClientOpened());
     this.blockEntityRenderDispatcher.renderItem(blockEntity, matrixStack, buffer, combinedLight, OverlayTexture.NO_OVERLAY);
     blockEntity.setClientOpened(open);
-  }
+  }*/
 }

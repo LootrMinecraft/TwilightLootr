@@ -15,6 +15,10 @@ import noobanidus.mods.twilightlootr.init.*;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+// TODO:
+// - Force boss chests on
+// - Disable multiplayer loot multiplier
+// - Boss chest command supplier
 @Mod(value = TwilightLootr.MODID)
 public class TwilightLootr {
   public static final Logger LOG = LogManager.getLogger();

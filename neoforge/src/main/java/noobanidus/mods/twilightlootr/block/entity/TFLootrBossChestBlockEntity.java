@@ -22,6 +22,7 @@ import noobanidus.mods.lootr.common.api.data.blockentity.ILootrBlockEntity;
 import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity;
 import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.init.ModBlockEntities;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.ArrayList;
@@ -67,6 +68,21 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
       compound.put("EligiblePlayers", eligiblePlayersTag);
     }
     compound.putInt("DecayingIn", this.decayingIn);
+  }
+
+  @Override
+  public @NotNull CompoundTag getUpdateTag(HolderLookup.Provider provider) {
+    CompoundTag compound = super.getUpdateTag(provider);
+    if (this.eligiblePlayers != null) {
+      ListTag eligiblePlayersTag = new ListTag();
+      for (UUID uuid : this.eligiblePlayers) {
+        CompoundTag tag = new CompoundTag();
+        tag.putUUID("UUID", uuid);
+        eligiblePlayersTag.add(tag);
+      }
+      compound.put("EligiblePlayers", eligiblePlayersTag);
+    }
+    return compound;
   }
 
   @Override

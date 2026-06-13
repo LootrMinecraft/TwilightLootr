@@ -28,14 +28,14 @@ public class TFLootrBossChestBlockRenderer extends ChestRenderer<TFLootrBossChes
     if (player == null) {
       return MATERIAL2;
     }
-    if (blockEntity.isEligiblePlayer(player)) {
-      if (blockEntity.hasClientOpened(player.getUUID())) {
-        return MATERIAL2;
-      } else {
-        return MATERIAL;
-      }
+    if (!blockEntity.isEligiblePlayer(player)) {
+      return MATERIAL3;
     }
 
-    return MATERIAL3;
+    if (blockEntity.hasClientOpened(player.getUUID())) {
+      return MATERIAL2;
+    } else {
+      return MATERIAL;
+    }
   }
 }
