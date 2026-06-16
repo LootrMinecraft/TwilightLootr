@@ -3,13 +3,11 @@ package noobanidus.mods.twilightlootr.mixin;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.BlockPos;
 import net.minecraft.server.level.ServerLevel;
-import net.minecraft.world.entity.ItemSteerable;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.ChestBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.PushReaction;
-import net.minecraft.world.level.storage.loot.LootTable;
 import noobanidus.mods.lootr.common.api.LootrAPI;
 import noobanidus.mods.twilightlootr.TwilightLootr;
 import noobanidus.mods.twilightlootr.block.entity.TFLootrBossChestBlockEntity;
@@ -26,7 +24,6 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import twilightforest.entity.boss.BaseTFBoss;
 import twilightforest.entity.boss.IBossLootBuffer;
-import twilightforest.entity.boss.KnightPhantom;
 import twilightforest.loot.TFLootTables;
 
 import java.util.List;
@@ -41,16 +38,16 @@ public interface MixinIBossLootBuffer {
       var tracking = bossWithTracking.lootr$getBossTracking();
 
       // Additionally track players nearby who died as they are
-      // eligible for the "Structure completed" achievement
+      // eligible for he "Structure completed" achievement
       tracking.trackPlayers(serverLevel, pos);
 
-      List<UUID> eligiblesPlayers = tracking.eligiblePlayers(serverLevel);
+      List<UUID> eligiblePlayers = tracking.eligiblePlayers(serverLevel);
       List<BossTracking.PlayerEntry> playerList = tracking.eligiblePlayersList(serverLevel);
 
       BlockState newChest = ModBlocks.BOSS_CHEST.get().defaultBlockState()
           .setValue(ChestBlock.FACING, incomingChest.getValue(ChestBlock.FACING));
 
-      if (eligiblesPlayers.isEmpty()) {
+      if (eligiblePlayers.isEmpty()) {
         // TODO: I guess this can happen when killed with a command?
         return;
       }
@@ -80,11 +77,11 @@ public interface MixinIBossLootBuffer {
 
       ci.cancel();
 
-      tbe.setEligiblePlayers(eligiblesPlayers);
+      tbe.setEligiblePlayers(eligiblePlayers);
 
       ObjectArrayList<ItemStack> bossUniqueItems = ((boss instanceof IHasBossLoot hasBossLoot) ? hasBossLoot.lootr$getBossUniqueItems() : new ObjectArrayList<>());
 
-      TFLootFiller filler = new TFLootFiller((BaseTFBoss)boss, bossUniqueItems);
+      TFLootFiller filler = new TFLootFiller((BaseTFBoss) boss, bossUniqueItems);
 
       var data = LootrAPI.getData(tbe);
       if (data == null) {
