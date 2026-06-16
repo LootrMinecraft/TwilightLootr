@@ -25,6 +25,9 @@ public class TFLootrBossChestBlockRenderer extends ChestRenderer<TFLootrBossChes
   @Override
   protected Material getMaterial(TFLootrBossChestBlockEntity blockEntity, ChestType type) {
     var player = Minecraft.getInstance().player;
+    if (blockEntity.isItemRendering) {
+      return MATERIAL;
+    }
     if (player == null) {
       return MATERIAL2;
     }

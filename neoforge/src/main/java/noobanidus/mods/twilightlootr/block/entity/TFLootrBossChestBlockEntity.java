@@ -18,10 +18,12 @@ import noobanidus.mods.lootr.common.api.ILootrBlockEntityConverter;
 import noobanidus.mods.lootr.common.api.ILootrType;
 import noobanidus.mods.lootr.common.api.LootrAPI;
 import noobanidus.mods.lootr.common.api.PlayerContext;
+import noobanidus.mods.lootr.common.api.advancement.IContainerTrigger;
 import noobanidus.mods.lootr.common.api.data.LootrBlockType;
 import noobanidus.mods.lootr.common.api.data.blockentity.ILootrBlockEntity;
 import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity;
 import noobanidus.mods.twilightlootr.TwilightLootr;
+import noobanidus.mods.twilightlootr.init.ModAdvancements;
 import noobanidus.mods.twilightlootr.init.ModBlockEntities;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -31,11 +33,17 @@ import java.util.List;
 import java.util.UUID;
 
 public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
+  public boolean isItemRendering = false;
   private int decayingIn = 0;
   private List<UUID> eligiblePlayers = new ArrayList<>();
 
   public TFLootrBossChestBlockEntity(BlockPos pWorldPosition, BlockState pBlockState) {
     super(ModBlockEntities.BOSS_CHEST.get(), pWorldPosition, pBlockState);
+  }
+
+  @Override
+  public @Nullable IContainerTrigger getTrigger() {
+    return ModAdvancements.BOSS_CHEST.get();
   }
 
   @Override

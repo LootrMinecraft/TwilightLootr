@@ -1,0 +1,26 @@
+{
+  "parent": "lootr:root",
+  "criteria": {
+    "opened_boss_chest": {
+      "trigger": "twilight_lootr:boss_chest_opened"
+    }
+  },
+  "display": {
+    "description": {
+      "translate": "twilight_lootr.advancements.1boss_chest.description"
+    },
+    "icon": {
+      "count": 1,
+      "id": "twilight_lootr:boss_chest"
+    },
+    "title": {
+      "translate": "twilight_lootr.advancements.1boss_chest.title"
+    }
+  },
+  "requirements": [
+    [
+      "opened_boss_chest"
+    ]
+  ],
+  "sends_telemetry_event": true
+}
