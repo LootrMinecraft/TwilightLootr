@@ -7,6 +7,7 @@
     "MixinBaseTFBoss",
     "MixinIBossLootBuffer",
     "MixinKnightPhantom",
+    "MixinTFConfig",
     "MixinTwilightForestMod"
   ],
   "client": [

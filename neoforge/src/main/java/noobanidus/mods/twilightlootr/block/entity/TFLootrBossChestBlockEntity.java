@@ -17,6 +17,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import noobanidus.mods.lootr.common.api.ILootrBlockEntityConverter;
 import noobanidus.mods.lootr.common.api.ILootrType;
 import noobanidus.mods.lootr.common.api.LootrAPI;
+import noobanidus.mods.lootr.common.api.PlayerContext;
 import noobanidus.mods.lootr.common.api.data.LootrBlockType;
 import noobanidus.mods.lootr.common.api.data.blockentity.ILootrBlockEntity;
 import noobanidus.mods.lootr.common.block.entity.LootrChestBlockEntity;
@@ -152,6 +153,19 @@ public class TFLootrBossChestBlockEntity extends LootrChestBlockEntity {
   @Override
   public ILootrType getInfoNewType() {
     return TwilightLootr.TYPE;
+  }
+
+  @Override
+  public int getParticleColor(PlayerContext context) {
+    if (!context.hasPlayer()) {
+      return super.getParticleColor(context);
+    }
+    assert context.player() != null;
+    if (isEligiblePlayer(context.player())) {
+      return 0x90dc0c;
+    } else {
+      return 0xe9311a;
+    }
   }
 
   @AutoService(ILootrBlockEntityConverter.class)

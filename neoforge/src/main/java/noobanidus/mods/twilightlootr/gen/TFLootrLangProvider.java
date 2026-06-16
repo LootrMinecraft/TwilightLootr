@@ -14,8 +14,14 @@ public class TFLootrLangProvider extends LanguageProvider {
   protected void addTranslations() {
     add(ModBlocks.BOSS_CHEST.get(), "Boss Chest");
     add("twilight_lootr.advancements.1boss_chest.title", "Bossing Around");
-    // TODO:
-    add("twilight_lootr.advancements.1boss_chest.description", "Open ???");
+    add("twilight_lootr.advancements.1boss_chest.description", "Open a Twilight Lootr boss chest!");
     add("twilight_lootr.boss_chest.ineligible", "You are not eligible to open this container.");
+
+    add("twilight_lootr.configuration.decay_time", "Decay Time");
+    add("twilight_lootr.configuration.enable_decay", "Enable Decay");
+    add("twilight_lootr.configuration.general", "General");
+    add("twilight_lootr.configuration.decay_time.tooltip", "The time (in ticks) from when a boss chest is spawn until it decays.");
+    add("twilight_lootr.configuration.enable_decay.tooltip", "When enabled, causes boss chests to start decaying as soon as they are spawned. After the decay time elapses, they will be destroyed.");
+    add("twilight_lootr.configuration.title", "Twilight Lootr");
   }
 }

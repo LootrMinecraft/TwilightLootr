@@ -1,6 +1,12 @@
 {
   "block.twilight_lootr.boss_chest": "Boss Chest",
-  "twilight_lootr.advancements.1boss_chest.description": "Open ???",
+  "twilight_lootr.advancements.1boss_chest.description": "Open a Twilight Lootr boss chest!",
   "twilight_lootr.advancements.1boss_chest.title": "Bossing Around",
-  "twilight_lootr.boss_chest.ineligible": "You are not eligible to open this container."
+  "twilight_lootr.boss_chest.ineligible": "You are not eligible to open this container.",
+  "twilight_lootr.configuration.decay_time": "Decay Time",
+  "twilight_lootr.configuration.decay_time.tooltip": "The time (in ticks) from when a boss chest is spawn until it decays.",
+  "twilight_lootr.configuration.enable_decay": "Enable Decay",
+  "twilight_lootr.configuration.enable_decay.tooltip": "When enabled, causes boss chests to start decaying as soon as they are spawned. After the decay time elapses, they will be destroyed.",
+  "twilight_lootr.configuration.general": "General",
+  "twilight_lootr.configuration.title": "Twilight Lootr"
 }
