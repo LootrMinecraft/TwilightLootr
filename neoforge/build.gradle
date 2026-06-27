@@ -74,9 +74,6 @@ publishMods {
         changelogText += utils.getExecOutput(['git', 'log', "--pretty=tformat:- %s [(%h)](${gitRepo}/commit/%h)", '' + gitPrevCommit + '..' + gitCommit])
     }
 
-    // Limit the changelog to 500 characters
-    changelogText = changelogText.take(500)
-
     if (project.hasProperty('curseforge_id_neoforge')) {
         curseforge('curseforgeNeoForge') {
             type = STABLE
@@ -88,6 +85,8 @@ publishMods {
             announcementTitle = "Twilight Lootr ${rootProject.minecraft_version}-${rootProject.mod_version} for NeoForge on CurseForge"
             minecraftVersions.add(project.minecraft_version)
             changelog = changelogText
+            requires("lootr")
+            requires("the-twilight-forest")
         }
     }
 
