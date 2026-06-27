@@ -81,23 +81,11 @@ publishMods {
         curseforge('curseforgeNeoForge') {
             type = STABLE
 
-            projectSlug = "lootr"
-            displayName = "lootr-neoforge-${rootProject.minecraft_version}-${rootProject.mod_version}"
+            projectSlug = "twilight-lootr"
+            displayName = "twilight-lootr-neoforge-${rootProject.minecraft_version}-${rootProject.mod_version}"
             accessToken = project.findProperty("curse_auth")
             projectId = project.findProperty('curseforge_id_neoforge')
-            announcementTitle = "Lootr ${rootProject.minecraft_version}-${rootProject.mod_version} for NeoForge on CurseForge"
-            minecraftVersions.add(project.minecraft_version)
-            changelog = changelogText
-        }
-    }
-
-    if (project.hasProperty('modrinth_id_fabric')) {
-        modrinth('modrinthNeoForge') {
-            type = STABLE
-            displayName = "lootr-neoforge-${rootProject.minecraft_version}-${rootProject.mod_version}"
-            accessToken = project.findProperty("modrinth_auth")
-            projectId = project.findProperty('modrinth_id_neoforge')
-            announcementTitle = "Lootr ${rootProject.minecraft_version}-${rootProject.mod_version} for NeoForge on Modrinth"
+            announcementTitle = "Twilight Lootr ${rootProject.minecraft_version}-${rootProject.mod_version} for NeoForge on CurseForge"
             minecraftVersions.add(project.minecraft_version)
             changelog = changelogText
         }
@@ -106,8 +94,8 @@ publishMods {
     if (project.hasProperty("curse_discord_webhook")) {
         discord {
             webhookUrl = project.findProperty("curse_discord_webhook")
-            username = "Lootr Update"
-            content = "A new version of Lootr has been released!\n\n${changelogText.take(500)}"
+            username = "Twilight Lootr Update"
+            content = "A new version of Twilight Lootr has been released!\n\n${changelogText.take(500)}"
         }
     }
 }
