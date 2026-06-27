@@ -8,7 +8,7 @@ license="https://github.com/LootrMinecraft/TwilightLootr/blob/HEAD/LICENSE"
     displayName="Twilight Lootr"
     displayURL="https://minecraft.curseforge.com/projects/twilight-lootr"
     authors="Noobanidus"
-    description="Generates unique loot for each player that opens a loot container."
+    description="Generates a boss chest with instanced loot for everyone who participated in the kill."
 
 
 [[mixins]]
