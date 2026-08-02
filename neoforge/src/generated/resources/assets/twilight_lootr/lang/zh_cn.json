@@ -1,0 +1,12 @@
+{
+  "block.twilight_lootr.boss_chest": "Boss箱子",
+  "twilight_lootr.advancements.1boss_chest.description": "打开一个Twilight Lootr的Boss箱子！",
+  "twilight_lootr.advancements.1boss_chest.title": "老子才是老大",
+  "twilight_lootr.boss_chest.ineligible": "你没有资格打开这个容器。",
+  "twilight_lootr.configuration.decay_time": "衰减时间",
+  "twilight_lootr.configuration.decay_time.tooltip": "从Boss箱子生成到它衰减的时长（以刻为单位）。",
+  "twilight_lootr.configuration.enable_decay": "启用衰减",
+  "twilight_lootr.configuration.enable_decay.tooltip": "启用时，Boss箱子在生成后会立即开始衰减。衰减时间结束后它们会被破坏。",
+  "twilight_lootr.configuration.general": "通用",
+  "twilight_lootr.configuration.title": "Twilight Lootr"
+}
